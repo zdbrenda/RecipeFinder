@@ -43,4 +43,3 @@ export const renderResults=recipes=>{
     
     recipes.forEach(renderRecipe);
 }
-
