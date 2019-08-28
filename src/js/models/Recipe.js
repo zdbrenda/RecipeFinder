@@ -13,6 +13,7 @@ export default class Recipe{
        try{
            
            const res=await axios(`https://www.food2fork.com/api/get?key=${key}&rId=${this.id}`);
+           console.log(res.data);
            this.title=res.data.recipe.title;
            this.author=res.data.recipe.publisher;
            this.img= res.data.recipe.image_url;
@@ -44,7 +45,7 @@ export default class Recipe{
                         'teaspoon','cups','pounds'];
         const unitsShort=['tbsp','tbsp','oz','oz','tsp','tsp','cup','pound']
             ;
-        
+        const units=[...unitsShort,'kg','g'];
         const newIngredients = this.ingredients.map(el=>{
             // 1. Uniform units
             let ingredient=el.toLowerCase();
@@ -57,7 +58,7 @@ export default class Recipe{
             
             // 3. parse ingredients into count, unit and ingredients
             const arrIng=ingredient.split(" ");
-            const unitIndex=arrIng.findIndex(el2 =>unitsShort.includes(el2));
+            const unitIndex=arrIng.findIndex(el2 =>units.includes(el2));
             
             let objIng;
             if(unitIndex>-1){
@@ -102,6 +103,20 @@ export default class Recipe{
             
         });
         this.ingredients=newIngredients;
+    }
+    
+    updateServings(type){
+        //Servings
+        const newServings=type==='dec'?this.servings-1:this.servings+1;
+        //Ingredients
+        
+        this.ingredients.forEach(ing=>{
+            
+            ing.count=ing.count*(newServings/this.servings);
+        })
+        
+        this.servings=newServings;
+        
     }
     
     
